@@ -6,7 +6,7 @@ export async function GET(request) {
   if (!admin || !configured()) return json({ ok: false }, 404);
   if (!timingSafeEqual(request.headers.get("authorization") || "", `Bearer ${admin}`)) return json({ ok: false }, 401);
 
-  const rows = [["name", "email", "whatsapp", "consentAt", "country"]];
+  const rows = [["name", "email", "whatsapp", "consentAt", "country", "priceShown"]];
   for (const pattern of ["email:*", "phone:*"]) {
     let cursor = "0";
     do {
@@ -15,7 +15,7 @@ export async function GET(request) {
       if (keys.length) {
         for (const raw of await redis("MGET", ...keys)) {
           const v = JSON.parse(raw || "{}");
-          rows.push([v.name, v.email, v.whatsapp, v.consentAt, v.country]);
+          rows.push([v.name, v.email, v.whatsapp, v.consentAt, v.country, v.offer]);
         }
       }
     } while (cursor !== "0");

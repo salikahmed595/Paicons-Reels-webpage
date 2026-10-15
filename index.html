@@ -7,8 +7,8 @@
      Replace every https://paicons.com/self-development/ with your live page URL
      (also in robots.txt and sitemap.xml). See README.md.
      ================================================ -->
-<title>PAICONS Self-Development: Digital Wellbeing &amp; Screen Time App for Reels | Pakistan</title>
-<meta name="description" content="Count every Reel, Short and TikTok you watch, privately on your phone. A digital wellbeing app made for Pakistan that helps you cut screen time without quitting. English and Urdu. Waitlist price Rs 100/month instead of Rs 700.">
+<title>PAICONS Self-Development: Digital Wellbeing &amp; Screen Time App for Reels</title>
+<meta name="description" content="Count every Reel, Short and TikTok you watch, privately on your phone. A digital wellbeing app that helps you cut screen time without quitting. English and Urdu. Join the waitlist for a founding price of US$0.99/month (Rs 100 in Pakistan), paid in your own currency.">
 <link rel="canonical" href="https://paicons.com/self-development/">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="theme-color" content="#0B0D0A">
@@ -23,9 +23,11 @@
 
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="PAICONS">
-<meta property="og:locale" content="en_PK">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="en_PK">
+<meta property="og:locale:alternate" content="ur_PK">
 <meta property="og:title" content="Know your scroll. Take back your time. | PAICONS Self-Development">
-<meta property="og:description" content="A private reel counter for Instagram, YouTube Shorts, Facebook Reels and TikTok. Join the waitlist: Rs 100/month instead of Rs 700.">
+<meta property="og:description" content="A private reel counter for Instagram, YouTube Shorts, Facebook Reels and TikTok. Join the waitlist for a founding price in your own currency.">
 <meta property="og:url" content="https://paicons.com/self-development/">
 <meta property="og:image" content="https://paicons.com/self-development/assets/og-image.jpg">
 <meta property="og:image:width" content="1200">
@@ -49,7 +51,7 @@
       "@id": "https://paicons.com/self-development/#page",
       "url": "https://paicons.com/self-development/",
       "name": "PAICONS Self-Development: Digital Wellbeing & Screen Time App for Reels",
-      "inLanguage": "en-PK",
+      "inLanguage": "en",
       "isPartOf": {"@id": "https://paicons.com/#org"},
       "primaryImageOfPage": "https://paicons.com/self-development/assets/og-image.jpg"
     },
@@ -65,7 +67,10 @@
       "image": "https://paicons.com/self-development/assets/icon-512.png",
       "screenshot": "https://paicons.com/self-development/assets/screens/home.webp",
       "publisher": {"@id": "https://paicons.com/#org"},
-      "offers": {"@type": "Offer", "price": "100", "priceCurrency": "PKR", "availability": "https://schema.org/PreOrder", "description": "Waitlist price per month (regular price Rs 700 per month)"}
+      "offers": [
+        {"@type": "Offer", "price": "0.99", "priceCurrency": "USD", "availability": "https://schema.org/PreOrder", "description": "Waitlist price per month (regular price US$4.99 per month). Charged in local currency by Google Play."},
+        {"@type": "Offer", "price": "100", "priceCurrency": "PKR", "eligibleRegion": {"@type": "Country", "name": "Pakistan"}, "availability": "https://schema.org/PreOrder", "description": "Waitlist price per month in Pakistan (regular price Rs 700 per month)"}
+      ]
     },
     {
       "@type": "VideoObject",
@@ -84,7 +89,7 @@
         {"@type": "Question", "name": "Does it block Instagram or TikTok like an app blocker?", "acceptedAnswer": {"@type": "Answer", "text": "No. App blockers lock apps, and many people end up switching them off. PAICONS Self-Development shows your real numbers and gives gentle reminders at 50%, 75% and 100% of your own daily limit, so stopping becomes your decision."}},
         {"@type": "Question", "name": "How can I reduce my screen time on reels?", "acceptedAnswer": {"@type": "Answer", "text": "Measure first, then set a realistic daily limit about 20 to 30 percent below your normal day. Use gentle reminders, keep a home-screen widget visible, and plan something for the times you usually scroll. PAICONS Self-Development does the counting, limits, reminders and widget for you."}},
         {"@type": "Question", "name": "What is a dopamine detox, and can this app help?", "acceptedAnswer": {"@type": "Answer", "text": "A dopamine detox usually means taking a break from quick, endless rewards such as short videos. A sudden full stop rarely lasts, so cutting down gradually works better. PAICONS Self-Development helps by showing exactly how many short videos you watch, so you can lower your limit week by week. It is a self-awareness tool, not medical treatment."}},
-        {"@type": "Question", "name": "How much does it cost?", "acceptedAnswer": {"@type": "Answer", "text": "Joining the waitlist is free. Waitlist members get the app for Rs 100 per month. After launch, the regular price is Rs 700 per month. Payments are handled by Google Play."}},
+        {"@type": "Question", "name": "How much does it cost?", "acceptedAnswer": {"@type": "Answer", "text": "Joining the waitlist is free. Waitlist members get the app for US$0.99 per month (Rs 100 in Pakistan), charged in your own currency. After launch, the regular price is US$4.99 per month (Rs 700 in Pakistan). Payments are handled by Google Play."}},
         {"@type": "Question", "name": "Which phones and apps does it support?", "acceptedAnswer": {"@type": "Answer", "text": "Android 10 or later, with Instagram Reels, YouTube Shorts, Facebook Reels and TikTok. iPhone is not supported yet."}}
       ]
     }
@@ -346,8 +351,8 @@ dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(6px);-webkit-bac
     <span class="pill"><i aria-hidden="true"></i>Waitlist open · Android</span>
     <h1>Just one more reel… <span>said 100 reels ago.</span></h1>
     <p class="sub">A private reel counter for digital wellbeing. See how much you really scroll, and take your time back.</p>
-    <button class="btn" type="button" data-join>Join the waitlist · Rs&nbsp;100/mo</button>
-    <p class="note">Rs&nbsp;700 after launch · Pay nothing today</p>
+    <button class="btn" type="button" data-join>Join the waitlist · <span data-p="w">US$0.99</span>/mo</button>
+    <p class="note"><span data-p="r">US$4.99</span> after launch · Pay nothing today</p>
     <p class="proof" id="proof" hidden></p>
     <div class="shot" aria-hidden="true"><div class="frame float"><img src="assets/screens/home.webp" alt="" width="432" height="960" fetchpriority="high"></div></div>
   </div>
@@ -389,7 +394,7 @@ dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(6px);-webkit-bac
         <div class="row"><span id="simLeft"><span class="down">↓</span> Scroll to swipe</span><span id="simTime">0 min</span></div>
         <div class="bar"><i id="simBar"></i></div>
       </div>
-      <div class="xp-cta" id="simDone"><button class="btn" type="button" data-join tabindex="-1">Get it for Rs&nbsp;100/mo</button></div>
+      <div class="xp-cta" id="simDone"><button class="btn" type="button" data-join tabindex="-1">Get it for <span data-p="w">US$0.99</span>/mo</button></div>
     </div>
   </div>
 </section>
@@ -418,7 +423,7 @@ dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(6px);-webkit-bac
   <div class="wrap">
     <div class="head rv">
       <span class="kicker">The app</span>
-      <h2 id="app-h">Simple. Private.<br>Made for Pakistan.</h2>
+      <h2 id="app-h">Simple. Private.<br>Works anywhere.</h2>
     </div>
     <div class="rail" id="rail">
       <figure><div class="ph"><img src="assets/screens/home.webp" alt="Home screen with today’s count of 126 short videos" loading="lazy" decoding="async" width="432" height="960"></div><figcaption><b>Counts by itself</b><span>Every app, no tapping</span></figcaption></figure>
@@ -447,22 +452,22 @@ dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(6px);-webkit-bac
     </div>
     <div class="price rv">
       <span class="tag">WAITLIST ONLY</span>
-      <div class="amt"><b>Rs&nbsp;100</b><span>/ month</span></div>
-      <p class="was">Instead of <s>Rs&nbsp;700</s> · about Rs&nbsp;3 a day</p>
+      <div class="amt"><b data-p="w">US$0.99</b><span>/ month</span></div>
+      <p class="was">Instead of <s data-p="r">US$4.99</s> · about <span data-p="d">US$0.03</span> a day</p>
       <ul>
         <li>The full app, every feature</li>
         <li>Free to join, pay nothing today</li>
-        <li>Subscribe after launch, only if you want</li>
+        <li>Charged in your own currency, only if you subscribe after launch</li>
       </ul>
-      <button class="btn" type="button" data-join>Save my Rs&nbsp;100 spot</button>
+      <button class="btn" type="button" data-join>Save my founding price</button>
     </div>
 
     <div class="vs rv">
-      <h3>What Rs 100 buys today</h3>
-      <div class="r"><span class="e" aria-hidden="true">🍔</span><div>A burger<small>Gone in 10 minutes</small></div><b>Rs 200+</b></div>
-      <div class="r"><span class="e" aria-hidden="true">📱</span><div>International apps<small>Up to $19.99 a month</small></div><b>Rs 5,000+</b></div>
-      <div class="r win"><span class="e" aria-hidden="true">🌱</span><div>PAICONS<small>A whole month of your time back</small></div><b>Rs 100</b></div>
-      <p class="fine">Prices are indicative and vary by city. The international price is a popular screen-time app’s 2026 monthly plan, roughly converted. Subscriptions are handled by Google Play.</p>
+      <h3>What <span data-p="w">US$0.99</span> buys today</h3>
+      <div class="r"><span class="e" aria-hidden="true">🍔</span><div>A burger<small>Gone in 10 minutes</small></div><b data-p="b">US$5+</b></div>
+      <div class="r"><span class="e" aria-hidden="true">📱</span><div>Popular screen-time apps<small>Per month</small></div><b data-p="a">US$19.99</b></div>
+      <div class="r win"><span class="e" aria-hidden="true">🌱</span><div>PAICONS<small>A whole month of your time back</small></div><b data-p="w">US$0.99</b></div>
+      <p class="fine">Prices are indicative and vary by country and city. The screen-time app price is a popular app’s 2026 monthly plan, roughly converted. Subscriptions are handled by Google Play, which shows the final price in your currency, including local taxes.</p>
     </div>
   </div>
 </section>
@@ -476,7 +481,7 @@ dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(6px);-webkit-bac
       <details><summary>Will it block Instagram or TikTok?</summary><div class="a"><p>No. App blockers lock apps, and many people end up switching them off. This digital wellbeing app shows your real numbers and sends gentle reminders at 50%, 75% and 100% of your limit, so stopping becomes your decision.</p></div></details>
       <details><summary>How do I reduce my screen time on reels?</summary><div class="a"><p>Measure first. Then set a limit about 20–30% below your normal day, turn on gentle reminders, keep a widget on your home screen, and plan something for the times you usually scroll, like after lunch or before sleep.</p><p>PAICONS Self-Development does the counting, limits, reminders and widget for you.</p></div></details>
       <details><summary>What is a dopamine detox? Can this help?</summary><div class="a"><p>A dopamine detox usually means a break from quick, endless rewards like short videos, so slower things feel rewarding again. A sudden full stop rarely lasts. Cutting down gradually works better: know your number, then lower your limit week by week.</p><p>This is a self-awareness tool, not medical treatment. If phone use is seriously affecting your life, please talk to a professional.</p></div></details>
-      <details><summary>Do I pay anything now?</summary><div class="a"><p>No. Joining is free. At launch, waitlist members can subscribe for Rs 100 a month instead of Rs 700, through Google Play.</p></div></details>
+      <details><summary>Do I pay anything now?</summary><div class="a"><p>No. Joining is free. At launch, waitlist members can subscribe for <span data-p="w">US$0.99</span> a month instead of <span data-p="r">US$4.99</span>, through Google Play, charged in your own currency.</p></div></details>
       <details><summary>Which phones does it support?</summary><div class="a"><p>Android 10 or later, with Instagram Reels, YouTube Shorts, Facebook Reels and TikTok. It needs Android’s Accessibility permission to notice a new video, explained clearly before you turn it on. iPhone isn’t supported yet.</p></div></details>
     </div>
   </div>
@@ -487,9 +492,9 @@ dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(6px);-webkit-bac
   <div class="glow" aria-hidden="true"></div>
   <div class="wrap">
     <h2 id="final-h">Your time.<br><span class="lime">Back.</span></h2>
-    <p class="ur" lang="ur">اسکرولنگ کم، زندگی زیادہ۔ ویٹ لسٹ میں شامل ہوں، صرف 100 روپے ماہانہ۔</p>
-    <button class="btn" type="button" data-join>Join the waitlist · Rs&nbsp;100/mo</button>
-    <p class="note">Takes 20 seconds · Rs&nbsp;700 after launch</p>
+    <p class="ur" lang="ur">اسکرولنگ کم، زندگی زیادہ۔ آج ہی ویٹ لسٹ میں شامل ہوں۔</p>
+    <button class="btn" type="button" data-join>Join the waitlist · <span data-p="w">US$0.99</span>/mo</button>
+    <p class="note">Takes 20 seconds · <span data-p="r">US$4.99</span> after launch</p>
   </div>
 </section>
 </main>
@@ -502,7 +507,7 @@ dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(6px);-webkit-bac
   </div>
 </footer>
 
-<div class="dock" id="dock"><button class="btn" type="button" data-join>Join waitlist · Rs&nbsp;100 <span>/ <s>700</s></span></button></div>
+<div class="dock" id="dock"><button class="btn" type="button" data-join>Join waitlist · <span data-p="w">US$0.99</span> <span>/ <s data-p="r">US$4.99</s></span></button></div>
 
 <!-- Waitlist sheet -->
 <dialog class="sheet" id="sheet" aria-labelledby="sheet-h">
@@ -511,11 +516,11 @@ dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(6px);-webkit-bac
     <form id="waitlist" action="/api/waitlist" method="post" novalidate>
       <div id="formView">
         <div class="sh"><h2 id="sheet-h">Save your spot</h2><button class="x" type="button" data-close aria-label="Close">✕</button></div>
-        <p class="deal"><b>Rs&nbsp;100/month</b> instead of Rs&nbsp;700. Pay nothing today.</p>
+        <p class="deal"><b><span data-p="w">US$0.99</span>/month</b> instead of <span data-p="r">US$4.99</span>. Pay nothing today.</p>
         <div class="field"><label for="name">Name</label>
           <input id="name" name="name" type="text" autocomplete="given-name" autocapitalize="words" enterkeyhint="next" required maxlength="80" placeholder="Your name"></div>
         <div class="field"><label for="contact">WhatsApp or email</label>
-          <input id="contact" name="contact" type="text" autocomplete="tel" enterkeyhint="done" required maxlength="120" placeholder="03xx xxxxxxx or you@email.com" autocapitalize="off" spellcheck="false"></div>
+          <input id="contact" name="contact" type="text" autocomplete="tel" enterkeyhint="done" required maxlength="120" placeholder="WhatsApp with country code, or email" autocapitalize="off" spellcheck="false"></div>
         <div class="hp" aria-hidden="true"><label for="company">Company</label><input id="company" name="company" tabindex="-1" autocomplete="off"></div>
         <label class="check"><input type="checkbox" id="consent" name="consent" required><span>Message me once when it launches. My details are never sold.</span></label>
         <button class="btn" type="submit" id="submitBtn">Join the waitlist</button>
@@ -524,7 +529,7 @@ dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(6px);-webkit-bac
       <div class="done" id="doneView" hidden tabindex="-1">
         <div class="ok" aria-hidden="true">✓</div>
         <h2>You’re in.</h2>
-        <p>Your Rs&nbsp;100/month price is saved. We’ll message you the moment it’s live.</p>
+        <p>Your <span data-p="w">US$0.99</span>/month price is saved. We’ll message you the moment it’s live.</p>
         <a class="btn wa" id="waShare" href="#" target="_blank" rel="noopener">Share on WhatsApp</a>
         <button class="btn btn-line" type="button" data-close>Done</button>
       </div>
@@ -556,6 +561,57 @@ dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(6px);-webkit-bac
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const buzz = ms => { try { navigator.vibrate && navigator.vibrate(ms); } catch (e) {} };
   $('#yr').textContent = new Date().getFullYear();
+
+  /* ---------- Local pricing: founding price in the visitor's own currency ----------
+     w = waitlist / month, r = regular / month, b = a burger, a = a popular screen-time app.
+     Google Play shows the final price (with local taxes) at checkout. Edit these to change prices. */
+  const PRICES = {
+    PKR: {w: 100,  r: 700,   b: '200+', a: '5,000+'},
+    USD: {w: 0.99, r: 4.99,  b: 5,      a: 19.99},
+    EUR: {w: 0.99, r: 4.99,  b: 5,      a: 19.99},
+    GBP: {w: 0.99, r: 4.49,  b: 5,      a: 17.99},
+    INR: {w: 89,   r: 449,   b: 150,    a: 1699},
+    BDT: {w: 119,  r: 599,   b: 250,    a: 2400},
+    AED: {w: 3.99, r: 18.99, b: 20,     a: 74.99},
+    SAR: {w: 3.99, r: 18.99, b: 20,     a: 74.99},
+    CAD: {w: 1.39, r: 6.99,  b: 7,      a: 27.99},
+    AUD: {w: 1.49, r: 7.99,  b: 8,      a: 29.99}
+  };
+  const CUR = {PK: 'PKR', US: 'USD', GB: 'GBP', IN: 'INR', BD: 'BDT', AE: 'AED', SA: 'SAR', CA: 'CAD', AU: 'AUD'};
+  'AT BE CY DE EE ES FI FR GR HR IE IT LT LU LV MT NL PT SI SK'.split(' ').forEach(c => { CUR[c] = 'EUR'; });
+  const TZ = {'Asia/Karachi': 'PK', 'Asia/Kolkata': 'IN', 'Asia/Calcutta': 'IN', 'Asia/Dhaka': 'BD', 'Asia/Dubai': 'AE', 'Asia/Riyadh': 'SA', 'Europe/London': 'GB'};
+  const onPrice = [];
+  const price = {
+    cur: 'USD', p: PRICES.USD,
+    fmt(v){
+      if (typeof v === 'string') return this.fmt(parseFloat(v.replace(/,/g, ''))) + (v.endsWith('+') ? '+' : '');
+      if (this.cur === 'PKR') return 'Rs\u00a0' + v.toLocaleString('en-US');
+      if (this.cur === 'USD' && this.country !== 'US') return 'US$' + (v % 1 ? v.toFixed(2) : v.toLocaleString('en-US'));
+      const dec = v % 1 ? 2 : 0;
+      try { return new Intl.NumberFormat(navigator.language || 'en', {style: 'currency', currency: this.cur, currencyDisplay: this.cur === 'USD' ? 'narrowSymbol' : 'symbol', minimumFractionDigits: dec, maximumFractionDigits: dec}).format(v); }
+      catch (e) { return this.cur + '\u00a0' + v; }
+    },
+    set(country){
+      const cur = CUR[country] || 'USD';
+      if (cur === this.cur && this.done && (cur !== 'USD' || country === this.country)) return;
+      this.cur = cur; this.p = PRICES[cur]; this.done = true; this.country = country;
+      const p = this.p, day = p.w / 30;
+      const val = {w: this.fmt(p.w), r: this.fmt(p.r), b: this.fmt(p.b) + (typeof p.b === 'number' ? '+' : ''), a: this.fmt(p.a),
+        d: p.w >= 10 ? this.fmt(Math.round(day)) : this.fmt(Math.max(.01, Math.round(day * 100) / 100))};   // whole units where there are no small coins
+      $$('[data-p]').forEach(el => { el.textContent = val[el.dataset.p]; });
+      document.documentElement.dataset.cur = cur;
+      onPrice.forEach(f => f());
+    }
+  };
+  // 1) Instant guess from the phone's time zone or language, so prices never flash.
+  let guess = '';
+  try { guess = TZ[Intl.DateTimeFormat().resolvedOptions().timeZone] || ''; } catch (e) {}
+  if (!guess) { const m = (navigator.language || '').match(/-([A-Z]{2})$/i); if (m) guess = m[1].toUpperCase(); }
+  price.set(guess);
+  // 2) Confirm with the visitor's real country (from Vercel).
+  fetch('/api/geo').then(r => r.ok ? r.json() : null).then(d => { if (d && d.country) price.set(d.country.toUpperCase()); }).catch(() => {});
+  const setPh = () => { $('#contact').placeholder = price.cur === 'PKR' ? '03xx xxxxxxx or you@email.com' : 'WhatsApp with country code, or email'; };
+  setPh(); onPrice.push(setPh);
 
   /* ---------- Top bar + dock ---------- */
   const top = $('#top'), dock = $('#dock');
@@ -727,10 +783,10 @@ dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(6px);-webkit-bac
     const name = $('#name').value.trim(), c = contact.value.trim();
     status.className = 'status'; status.textContent = '';
     if (name.length < 2) return err('Please enter your name.', '#name');
-    if (!isEmail(c) && !isPhone(c)) return err('Enter a WhatsApp number (03xx xxxxxxx) or an email.', '#contact');
+    if (!isEmail(c) && !isPhone(c)) return err('Enter a WhatsApp number with country code, or an email.', '#contact');
     if (!$('#consent').checked) return err('Please tick the box so we can message you at launch.', '#consent');
     btn.disabled = true; btn.textContent = 'Saving…';
-    const body = {name, consent: 'on', company: $('#company').value};
+    const body = {name, consent: 'on', company: $('#company').value, offer: `${price.fmt(price.p.w)}/month (regular ${price.fmt(price.p.r)})`};
     if (isEmail(c)) body.email = c; else body.whatsapp = c;
     try {
       const res = await fetch(form.action, {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify(body)});
@@ -741,13 +797,13 @@ dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(6px);-webkit-bac
     } finally { btn.disabled = false; btn.textContent = 'Join the waitlist'; }
   });
   function err(msg, sel){ status.className = 'status err'; status.textContent = msg; buzz(30); if (sel) $(sel).focus(); }
-  const share = 'I just joined the PAICONS Self-Development waitlist. It counts your reels privately and helps you scroll less. Rs 100/month instead of Rs 700: ';
-  $('#waShare').href = 'https://wa.me/?text=' + encodeURIComponent(share + location.href.split('#')[0]);
+  const setShare = () => { $('#waShare').href = 'https://wa.me/?text=' + encodeURIComponent(`I just joined the PAICONS Self-Development waitlist. It counts your reels privately and helps you scroll less. ${price.fmt(price.p.w)}/month instead of ${price.fmt(price.p.r)}: ` + location.href.split('#')[0]); };
+  setShare(); onPrice.push(setShare);
 
   /* ---------- Honest social proof: only once the real count is meaningful ---------- */
   const PROOF_MIN = 50;
   fetch('/api/waitlist/count').then(r => r.ok ? r.json() : null).then(d => {
-    if (d && d.count >= PROOF_MIN) { const p = $('#proof'); p.textContent = `${d.count.toLocaleString('en-PK')} people have already joined`; p.hidden = false; }
+    if (d && d.count >= PROOF_MIN) { const p = $('#proof'); p.textContent = `${d.count.toLocaleString()} people have already joined`; p.hidden = false; }
   }).catch(() => {});
 })();
 </script>

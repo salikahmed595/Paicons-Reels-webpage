@@ -12,7 +12,7 @@
 
 const SECRET = 'CHANGE-ME-to-a-long-random-value';
 const SHEET_NAME = 'Waitlist';
-const HEADERS = ['Joined at', 'Name', 'Email', 'WhatsApp', 'Country', 'Consent', 'Source', 'Key'];
+const HEADERS = ['Joined at', 'Name', 'Email', 'WhatsApp', 'Country', 'Consent', 'Source', 'Key', 'Price shown'];
 
 function doPost(e) {
   let d;
@@ -34,7 +34,7 @@ function doPost(e) {
     }
     sh.appendRow([
       d.consentAt ? new Date(d.consentAt) : new Date(),
-      text(d.name), text(email), text(whatsapp), text(d.country), 'Yes', text(d.source), key,
+      text(d.name), text(email), text(whatsapp), text(d.country), 'Yes', text(d.source), key, text(d.offer),
     ]);
     return out({ ok: true, added: true, count: rows + 1 });
   } finally {
@@ -56,8 +56,10 @@ function sheet() {
     sh.appendRow(HEADERS);
     sh.setFrozenRows(1);
     sh.getRange(1, 1, 1, HEADERS.length).setFontWeight('bold');
-    sh.getRange('B:H').setNumberFormat('@');   // keep +92… numbers as text
+    sh.getRange('B:I').setNumberFormat('@');   // keep +92… numbers as text
     sh.hideColumns(8);                          // Key is only used to avoid duplicates
+  } else if (sh.getRange(1, 9).getValue() === '') {
+    sh.getRange(1, 9).setValue('Price shown').setFontWeight('bold');   // sheets made by an older version
   }
   return sh;
 }

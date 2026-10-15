@@ -1,6 +1,6 @@
 # PAICONS Self-Development: waitlist landing page
 
-The mobile-first landing page for **PAICONS Self-Development**, a private reel counter for Android. Visitors join the waitlist at the founding price of **Rs 100/month** (regular price Rs 700).
+The mobile-first landing page for **PAICONS Self-Development**, a private reel counter for Android. Visitors anywhere in the world join the waitlist at a founding price shown **in their own currency**: **US$0.99/month** (regular US$4.99), or **Rs 100/month** (regular Rs 700) in Pakistan.
 
 It's a single static page (`index.html`) plus three small Vercel Functions that save waitlist sign-ups to **your Google Sheet** (and optionally Upstash Redis). There's no build step and no npm packages.
 
@@ -10,6 +10,7 @@ It's a single static page (`index.html`) plus three small Vercel Functions that 
 ├── api/waitlist/index.js      ← POST /api/waitlist         (save a sign-up)
 ├── api/waitlist/count.js      ← GET  /api/waitlist/count   (real number of sign-ups)
 ├── api/waitlist/export.js     ← GET  /api/waitlist/export  (CSV download, admin only)
+├── api/geo.js                 ← GET  /api/geo              (visitor's country, for local prices)
 ├── api/_lib/waitlist.js       ← shared helpers (not a route)
 ├── google-sheets/Code.gs      ← Apps Script that adds sign-ups to your Google Sheet (not published)
 ├── vercel.json                ← security and caching headers
@@ -31,7 +32,7 @@ Until a store is connected, the form shows "That didn't save", so nobody's detai
 
 ## 3. Waitlist in Google Sheets
 
-Every sign-up becomes a row: **Joined at · Name · Email · WhatsApp · Country · Consent · Source**. Duplicates are skipped.
+Every sign-up becomes a row: **Joined at · Name · Email · WhatsApp · Country · Consent · Source · Price shown**. Duplicates are skipped. *Price shown* is the founding price that person saw, in their currency, so you know what you promised them.
 
 **First, make the sheet private.** Open the sheet → **Share** → under *General access* choose **Restricted**. Right now anyone with the link can open it, and it's about to hold people's names and phone numbers.
 
@@ -75,15 +76,36 @@ npx vercel dev
 - `GET /api/waitlist/count` returns the real number of sign-ups (rows in the sheet). The page shows "N people have already joined" **only once there are 50 or more**. To change this, edit `PROOF_MIN` in `index.html`.
 - It stores only what the form asks for, plus the time of consent and the visitor's country code.
 
-## 5. Things to keep honest
+## 5. Prices by country
 
-- Make sure the **Rs 100 waitlist / Rs 700 regular** prices match what you will actually charge. If the founding price lasts only for a limited time, say so on the page. Google Play applies a special price only through an offer you set up in Play Console.
+The page guesses the visitor's country instantly from their phone's time zone and language, then confirms it with Vercel (`/api/geo`). It then shows every price in that currency:
+
+| Visitors from | Waitlist / month | Regular / month |
+|---|---|---|
+| Pakistan | Rs 100 | Rs 700 |
+| United States | $0.99 | $4.99 |
+| Eurozone | €0.99 | €4.99 |
+| United Kingdom | £0.99 | £4.49 |
+| India | ₹89 | ₹449 |
+| Bangladesh | BDT 119 | BDT 599 |
+| UAE / Saudi Arabia | AED / SAR 3.99 | AED / SAR 18.99 |
+| Canada | CA$1.39 | CA$6.99 |
+| Australia | A$1.49 | A$7.99 |
+| Everywhere else | US$0.99 | US$4.99 |
+
+The burger and screen-time-app comparison changes with the currency too. To change a price or add a country, edit `PRICES` and `CUR` near the top of the script in `index.html`.
+
+**Set the same prices in Google Play.** In Play Console, set the subscription's base price to US$4.99 and check each country's local price. Then add a **waitlist offer** for US$0.99 (Rs 100 in Pakistan). Google Play converts any country you don't set by hand. It charges in local currency with taxes included, so the final amount can differ slightly from the page.
+
+## 6. Things to keep honest
+
+- Make sure the prices in `PRICES` match what you will actually charge in Google Play. If the founding price lasts only for a limited time, say so on the page. Google Play applies a special price only through an offer you set up in Play Console.
 - The page has **no fake reviews, invented user counts or countdown timers**, on purpose. Add testimonials only once you have real ones.
 - The footer explains how waitlist details are used. Honour deletion requests.
 
-## 6. Get found on Google
+## 7. Get found on Google
 
-The page is built around what people in Pakistan actually search for. Keyword data for Pakistan, October 2026:
+The page is written for an international audience, and its topics were chosen with Pakistan keyword data (October 2026):
 
 | Search | Monthly searches | Difficulty (0–100) |
 |---|---|---|
@@ -103,7 +125,7 @@ After you deploy:
 4. Check the structured data at <https://search.google.com/test/rich-results>.
 5. Link to the page from paicons.com, your Instagram bio and YouTube descriptions.
 
-## 7. Videos
+## 8. Videos
 
 | File | What it is |
 |---|---|

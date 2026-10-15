@@ -41,11 +41,15 @@ export async function POST(request) {
 
   // One entry per person: dedupe on email if given, otherwise on the normalized phone number.
   const key = email ? `email:${email}` : `phone:${phone}`;
+  // Show "+<country code>…" only when we know the country code (typed with + or 00, or a Pakistani 03xx number);
+  // otherwise keep the number as typed, so a local number isn't given a wrong code.
+  const intl = /^\s*(\+|00)/.test(whatsapp) || /^03\d{9}$/.test(whatsapp.replace(/\D/g, ""));
   const entry = {
-    name, email, whatsapp: phone ? `+${phone}` : "",
+    name, email, whatsapp: phone ? (intl ? `+${phone}` : whatsapp) : "",
     consentAt: new Date().toISOString(),
     country: request.headers.get("x-vercel-ip-country") || "",
     source: new URL(request.url).hostname,
+    offer: clean(data.offer, 60),   // the price this visitor was shown, in their currency
   };
 
   // Save to every configured store; each one skips duplicates on its own.
