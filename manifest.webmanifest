@@ -1,0 +1,14 @@
+{
+  "name": "PAICONS Self-Development",
+  "short_name": "PAICONS",
+  "description": "A private reel counter that helps you reduce screen time. Join the waitlist.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "browser",
+  "background_color": "#F9FAF6",
+  "theme_color": "#F9FAF6",
+  "icons": [
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

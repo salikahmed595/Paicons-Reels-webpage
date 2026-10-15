@@ -1,0 +1,7 @@
+{
+  "name": "paicons-self-development-web",
+  "private": true,
+  "type": "module",
+  "description": "PAICONS Self-Development landing page with waitlist (Vercel)",
+  "engines": { "node": ">=20" }
+}
