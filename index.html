@@ -161,7 +161,7 @@ section{padding:96px 0 0;content-visibility:auto;contain-intrinsic-size:auto 700
 @keyframes float{50%{transform:translateY(-8px)}}
 
 /* Story video */
-.vcard{position:relative;width:min(300px,76vw);aspect-ratio:476/846;margin:36px auto 0;border-radius:32px;overflow:hidden;background:#05070a;border:1px solid var(--line2)}
+.vcard{position:relative;width:min(380px,88vw);aspect-ratio:476/846;margin:36px auto 0;border-radius:32px;overflow:hidden;background:#05070a;border:1px solid var(--line2)}
 .vcard video{width:100%;height:100%;object-fit:cover}
 .vplay{position:absolute;inset:0;border:0;cursor:pointer;background:linear-gradient(transparent 55%,rgba(0,0,0,.7));display:grid;place-items:center;z-index:2}
 .vplay b{width:72px;height:72px;border-radius:50%;background:var(--lime);display:grid;place-items:center;color:#0B0D0A;font-size:22px;padding-left:4px;transition:transform .2s var(--ease)}
@@ -615,10 +615,11 @@ dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(6px);-webkit-bac
 
   /* ---------- Top bar + dock ---------- */
   const top = $('#top'), dock = $('#dock');
-  let heroVis = true, finalVis = false, modal = false, xpActive = false;
-  const sync = () => dock.classList.toggle('show', !heroVis && !finalVis && !modal && !xpActive);
+  let heroVis = true, finalVis = false, modal = false, xpActive = false, videoVis = false;
+  const sync = () => dock.classList.toggle('show', !heroVis && !finalVis && !modal && !xpActive && !videoVis);
   new IntersectionObserver(([e]) => { heroVis = e.isIntersecting; sync(); }, {rootMargin: '0px 0px -40% 0px'}).observe($('#hero .btn'));
   new IntersectionObserver(([e]) => { finalVis = e.isIntersecting; sync(); }, {threshold: .25}).observe($('.final'));
+  new IntersectionObserver(([e]) => { videoVis = e.isIntersecting; sync(); }, {threshold: .35}).observe($('.vcard'));   // don't cover the video
   const onScroll = () => top.classList.toggle('solid', scrollY > 10);
   addEventListener('scroll', onScroll, {passive: true}); onScroll();
 
