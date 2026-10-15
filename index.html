@@ -165,31 +165,31 @@ section{padding:96px 0 0;content-visibility:auto;contain-intrinsic-size:auto 700
 .after{margin-top:22px}
 
 /* Scroll-driven reel experience: the section is tall, the phone stays pinned, page scroll swipes the reels */
-.xp{height:calc(100vh + 340vh);height:calc(100svh + 340svh);padding:0;content-visibility:visible}
+.xp{height:calc(100vh + 680vh);height:calc(100svh + 680svh);padding:0;content-visibility:visible}
 .stick{position:sticky;top:0;height:100vh;height:100svh;display:flex;align-items:center;padding:64px 0 18px}
 .xp-in{display:flex;flex-direction:column;align-items:center;text-align:center}
 .xp h2{font-size:clamp(30px,8.6vw,46px)}
 .xp .head p{min-height:3.1em}
 .feed{position:relative;height:min(46vh,500px);height:min(46svh,500px);aspect-ratio:9/16;margin:18px auto 0;border-radius:30px;overflow:hidden;background:#000;border:1px solid var(--line2);box-shadow:0 30px 80px -30px rgba(185,244,100,.28)}
-.strip{position:absolute;inset:0;will-change:transform}
-.reel{position:absolute;left:0;right:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:18px;text-align:left}
-.reel .e{position:absolute;top:42%;left:50%;transform:translate(-50%,-50%);font-size:clamp(48px,14vw,72px)}
+.strip{position:absolute;inset:0;background:#000}
+.reel{position:absolute;inset:0;border-radius:29px;overflow:hidden;will-change:transform,filter;transform-origin:50% 30%;display:flex;flex-direction:column;justify-content:flex-end;padding:18px;text-align:left}
+.reel .e{position:absolute;top:42%;left:50%;transform:translate(-50%,-50%);will-change:transform;font-size:clamp(48px,14vw,72px)}
 .reel b{font-size:14.5px;font-weight:700}
 .reel small{font-size:12px;opacity:.75}
 .reel .side{position:absolute;right:12px;bottom:70px;display:grid;gap:14px;opacity:.85;font-size:18px;line-height:1.4;text-align:center}
 .cnt{position:absolute;top:12px;left:12px;z-index:4;display:flex;align-items:baseline;gap:5px;padding:6px 12px;border-radius:999px;background:rgba(0,0,0,.55);backdrop-filter:blur(8px);font-size:12px;font-weight:600;color:var(--lime)}
 .cnt b{display:inline-block;font-size:17px;color:#fff;font-variant-numeric:tabular-nums}
-.cnt.bump b{animation:bump .35s var(--ease)}
-@keyframes bump{40%{transform:scale(1.35)}}
+.cnt.bump b{animation:bump .55s var(--ease)}
+@keyframes bump{35%{transform:scale(1.4);color:var(--lime)}}
 .toast{position:absolute;left:10px;right:10px;top:52px;z-index:5;background:rgba(18,21,16,.94);backdrop-filter:blur(10px);border:1px solid var(--line2);border-radius:16px;padding:11px 13px;font-size:13px;font-weight:600;text-align:left;
-  opacity:0;transform:translateY(-10px);transition:.35s var(--ease);pointer-events:none}
+  opacity:0;transform:translateY(-10px) scale(.98);transition:opacity .6s var(--ease),transform .6s var(--ease);pointer-events:none}
 .toast small{display:block;color:var(--mu);font-weight:500}
 .toast.show{opacity:1;transform:none}
 .meter{width:min(300px,80vw);margin:16px auto 0}
 .meter .row{display:flex;justify-content:space-between;font-size:14px;color:var(--mu)}
 .meter .row b{color:var(--tx);font-variant-numeric:tabular-nums}
 .bar{height:4px;border-radius:9px;background:var(--line2);margin-top:9px;overflow:hidden}
-.bar i{display:block;height:100%;width:0;background:var(--lime);transition:width .3s var(--ease)}
+.bar i{display:block;height:100%;width:0;background:var(--lime);transition:width .7s var(--ease)}
 .down{display:inline-block;animation:down 1.4s var(--ease) infinite}
 @keyframes down{50%{transform:translateY(4px)}}
 .xp-cta{width:min(300px,80vw);margin-top:14px;opacity:0;transform:translateY(10px);transition:.4s var(--ease);pointer-events:none}
@@ -596,8 +596,8 @@ dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(6px);-webkit-bac
   ];
   const STEPS = REELS.length - 1;               // 10 swipes = today's limit in this demo
   const xp = $('#try'), strip = $('#strip'), toast = $('#simToast'), cnt = $('#cnt'), ctaBox = $('#simDone');
-  strip.innerHTML = REELS.map(([e, t, s, bg], i) =>
-    `<div class="reel" style="top:${i * 100}%;background:${bg}"><span class="e">${e}</span><span class="side">♡<br>💬<br>↗</span><b>${t}</b><small>${s} · example reel</small></div>`).join('');
+  strip.innerHTML = REELS.map(([e, t, s, bg]) =>
+    `<div class="reel" style="background:${bg}"><span class="e">${e}</span><span class="side">♡<br>💬<br>↗</span><b>${t}</b><small>${s} · example reel</small></div>`).join('');
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   // Nudges at the same points as the app: shown while the count sits in that range.
@@ -623,19 +623,49 @@ dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(6px);-webkit-bac
     $('#xpSub').textContent = done ? 'That flew by, didn’t it? Imagine seeing your real number every day.' : 'Keep scrolling. Every reel you pass is counted, privately on your phone.';
     ctaBox.classList.toggle('show', done); ctaBox.querySelector('.btn').tabIndex = done ? 0 : -1;
   }
+  // Scroll sets a target position; the feed glides toward it, so swipes feel weighted, not jumpy.
+  const reels = [...strip.children];
+  let pos = 0, target = 0, running = false, last = 0;
+  function render(){
+    reels.forEach((el, k) => {
+      const d = k - pos;                                  // 0 = on screen, 1 = next, -1 = gone
+      if (d <= -1 || d >= 1) { el.style.visibility = 'hidden'; return; }
+      el.style.visibility = 'visible';
+      if (d < 0) {                                        // leaving: drifts up slowly, sinks back, dims
+        const a = -d;
+        el.style.transform = `translate3d(0,${-a * 38}%,0) scale(${1 - a * .1})`;
+        el.style.filter = `brightness(${1 - a * .6})`;
+        el.style.zIndex = 1;
+      } else {                                            // arriving: slides up over it
+        el.style.transform = `translate3d(0,${d * 100}%,0)`;
+        el.style.filter = 'none';
+        el.style.zIndex = 2;
+      }
+      el.firstElementChild.style.transform = `translate(-50%,-50%) translate3d(0,${d * -90}px,0) scale(${1 - Math.abs(d) * .15})`;
+    });
+  }
+  function loop(now){
+    const dt = Math.min(64, last ? now - last : 16.7); last = now;
+    const k = reduce ? 1 : 1 - Math.pow(1 - .085, dt / 16.7);   // same feel at 60 Hz and 120 Hz
+    const diff = target - pos;
+    pos = Math.abs(diff) < .0005 ? target : pos + diff * k;
+    render();
+    setCount(Math.min(STEPS, Math.floor(pos + .5)));     // counts once the new reel is half in view
+    if (pos !== target) requestAnimationFrame(loop); else { running = false; last = 0; }
+  }
   function frame(){
     ticking = false;
     const r = xp.getBoundingClientRect(), total = xp.offsetHeight - innerHeight;
-    const f = clamp(-r.top / total, 0, 1) * STEPS * 1.1;           // a short hold at the end
+    const f = clamp(-r.top / total, 0, 1) * STEPS * 1.08;           // a short hold at the end
     const i = Math.min(STEPS, Math.floor(f));
-    const e = i >= STEPS ? 0 : ease(clamp((f - i - .3) / .6, 0, 1)); // rest on each reel, then swipe
-    strip.style.transform = `translate3d(0,${-(i + e) * 100}%,0)`;
-    setCount(Math.min(STEPS, i + (e > .5 ? 1 : 0)));
+    // Rest on each reel for the first half of its scroll, then swipe.
+    target = i >= STEPS ? STEPS : i + ease(clamp((f - i - .5) / .5, 0, 1));
+    if (!running) { running = true; requestAnimationFrame(loop); }
     const active = r.top < innerHeight * .3 && r.bottom > innerHeight * .7;
     if (active !== xpActive) { xpActive = active; sync(); }
   }
   const onXp = () => { if (!ticking) { ticking = true; requestAnimationFrame(frame); } };
-  addEventListener('scroll', onXp, {passive: true}); addEventListener('resize', onXp); frame();
+  addEventListener('scroll', onXp, {passive: true}); addEventListener('resize', onXp); render(); frame();
 
   /* ---------- Calculator ---------- */
   const fmt = m => { const h = Math.floor(m / 60), mm = Math.round(m % 60); return h ? `${h}h ${mm}m` : `${mm}m`; };
