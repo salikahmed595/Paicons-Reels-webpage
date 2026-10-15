@@ -1,11 +1,14 @@
 /**
- * PAICONS Self-Development — shared waitlist helpers (Vercel Functions).
+ * PAICONS Self-Development — shared waitlist helpers (Vercel Functions). No npm packages needed.
  *
- * Storage: Upstash Redis over its REST API (no npm packages needed).
- * In Vercel: Project → Storage → Create → "Upstash for Redis", connect it to this project.
- * That adds the env vars below automatically (either naming works):
- *   KV_REST_API_URL + KV_REST_API_TOKEN   or   UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN
- * Optional: ADMIN_TOKEN (a long random secret) enables GET /api/waitlist/export.
+ * Where sign-ups go (set either or both in Vercel → Settings → Environment Variables):
+ *
+ *   Google Sheet (recommended)  SHEETS_WEBHOOK_URL  the Apps Script Web app URL (google-sheets/Code.gs)
+ *                               SHEETS_SECRET       the same SECRET as in Code.gs
+ *
+ *   Upstash Redis (optional)    KV_REST_API_URL + KV_REST_API_TOKEN
+ *                               (or UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN)
+ *                               ADMIN_TOKEN enables GET /api/waitlist/export (CSV from Redis)
  *
  * Stores only what the form asks for: name, email and/or WhatsApp, consent time, country code.
  */
@@ -14,6 +17,43 @@ export const COUNT_KEY = "meta:count";
 
 export const json = (body, status = 200, extra = {}) =>
   new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store", ...extra } });
+
+/* ---------- Google Sheets (Apps Script web app) ---------- */
+
+const sheetsConfig = () =>
+  process.env.SHEETS_WEBHOOK_URL && process.env.SHEETS_SECRET
+    ? { url: process.env.SHEETS_WEBHOOK_URL, secret: process.env.SHEETS_SECRET }
+    : null;
+
+export const sheetsConfigured = () => !!sheetsConfig();
+
+/** Appends one sign-up. The script skips duplicates. Returns {added, count}. */
+export async function sheetsAdd(entry) {
+  const cfg = sheetsConfig();
+  // Apps Script answers POST with a redirect to the result; fetch follows it.
+  const res = await fetch(cfg.url, {
+    method: "POST",
+    headers: { "content-type": "text/plain;charset=utf-8" },
+    body: JSON.stringify({ secret: cfg.secret, ...entry }),
+    redirect: "follow",
+    signal: AbortSignal.timeout(15000),
+  });
+  const data = await res.json().catch(() => null);
+  if (!res.ok || !data || !data.ok) throw new Error(`sheets_${(data && data.error) || res.status}`);
+  return data;
+}
+
+export async function sheetsCount() {
+  const cfg = sheetsConfig();
+  const url = new URL(cfg.url);
+  url.searchParams.set("secret", cfg.secret);
+  const res = await fetch(url, { redirect: "follow", signal: AbortSignal.timeout(10000) });
+  const data = await res.json().catch(() => null);
+  if (!data || !data.ok) throw new Error("sheets_count");
+  return data.count || 0;
+}
+
+/* ---------- Upstash Redis ---------- */
 
 function redisConfig() {
   const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;

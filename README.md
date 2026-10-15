@@ -2,7 +2,7 @@
 
 The mobile-first landing page for **PAICONS Self-Development**, a private reel counter for Android. Visitors join the waitlist at the founding price of **Rs 100/month** (regular price Rs 700).
 
-It's a single static page (`index.html`) plus three small Vercel Functions that save waitlist sign-ups to Upstash Redis. There's no build step and no npm packages.
+It's a single static page (`index.html`) plus three small Vercel Functions that save waitlist sign-ups to **your Google Sheet** (and optionally Upstash Redis). There's no build step and no npm packages.
 
 ```
 ├── index.html                 ← the whole page: HTML, CSS and JS inline
@@ -11,6 +11,7 @@ It's a single static page (`index.html`) plus three small Vercel Functions that 
 ├── api/waitlist/count.js      ← GET  /api/waitlist/count   (real number of sign-ups)
 ├── api/waitlist/export.js     ← GET  /api/waitlist/export  (CSV download, admin only)
 ├── api/_lib/waitlist.js       ← shared helpers (not a route)
+├── google-sheets/Code.gs      ← Apps Script that adds sign-ups to your Google Sheet (not published)
 ├── vercel.json                ← security and caching headers
 ├── manifest.webmanifest, robots.txt, sitemap.xml
 ```
@@ -23,12 +24,42 @@ Replace **`https://paicons.com/self-development/`** with your real page URL. It 
 
 1. Go to [vercel.com/new](https://vercel.com/new) and **import this GitHub repository**.
 2. Leave **Framework Preset** on **Other**. There's no build command and no output directory to set. Click **Deploy**.
-3. **Add storage for the waitlist.** Go to the project → **Storage** → **Create Database** → **Upstash for Redis** (free tier is plenty) → **Connect** it to this project. This adds the `KV_REST_API_URL` and `KV_REST_API_TOKEN` environment variables automatically.
-4. *(Optional, for downloading the list)* go to **Settings → Environment Variables** and add `ADMIN_TOKEN` with a long random value.
-5. Go to **Deployments → ⋯ → Redeploy** so the new variables take effect.
-6. Under **Settings → Domains**, add your domain, for example `app.paicons.com`.
+3. Connect the waitlist to your Google Sheet (next section).
+4. Under **Settings → Domains**, add your domain, for example `app.paicons.com`.
 
-Until storage is connected, the form shows "Sorry, that didn't save", so nobody's details are silently lost.
+Until a store is connected, the form shows "That didn't save", so nobody's details are silently lost.
+
+## 3. Waitlist in Google Sheets
+
+Every sign-up becomes a row: **Joined at · Name · Email · WhatsApp · Country · Consent · Source**. Duplicates are skipped.
+
+**First, make the sheet private.** Open the sheet → **Share** → under *General access* choose **Restricted**. Right now anyone with the link can open it, and it's about to hold people's names and phone numbers.
+
+1. In the sheet, open **Extensions → Apps Script**.
+2. Delete what's there and paste everything from [`google-sheets/Code.gs`](google-sheets/Code.gs).
+3. On the `const SECRET = ...` line, replace `CHANGE-ME-to-a-long-random-value` with a long random password (letters and numbers, 30+ characters). Click **Save**.
+4. Click **Deploy → New deployment** → gear icon → **Web app**. Set:
+   - **Execute as:** Me
+   - **Who has access:** Anyone
+
+   Click **Deploy**, allow access with your Google account, and copy the **Web app URL** (it ends in `/exec`).
+
+   *"Anyone" only lets the website reach the script. Without the secret it does nothing, and your sheet stays private.*
+5. In Vercel, go to **Settings → Environment Variables** and add:
+   - `SHEETS_WEBHOOK_URL` = the Web app URL
+   - `SHEETS_SECRET` = the same secret as in step 3
+6. Go to **Deployments → ⋯ → Redeploy**.
+7. Join the waitlist once on your live page. A **Waitlist** tab appears in the sheet with your row.
+
+If you change `Code.gs` later, use **Deploy → Manage deployments → Edit → Version: New version** so the URL stays the same.
+
+### Optional: a backup copy in Upstash Redis
+
+Go to **Storage → Create Database → Upstash for Redis → Connect**, then redeploy. Sign-ups then go to both places, and a sign-up is kept even if Google is briefly unavailable. Add `ADMIN_TOKEN` to download the Redis copy as CSV:
+
+```bash
+curl -H "Authorization: Bearer YOUR_ADMIN_TOKEN" https://YOUR-DOMAIN/api/waitlist/export -o waitlist.csv
+```
 
 ### Test it locally (optional)
 
@@ -36,22 +67,12 @@ Until storage is connected, the form shows "Sorry, that didn't save", so nobody'
 npx vercel dev
 ```
 
-## 3. Download your waitlist
-
-Download it as CSV with the columns name, email, whatsapp, consentAt and country:
-
-```bash
-curl -H "Authorization: Bearer YOUR_ADMIN_TOKEN" https://YOUR-DOMAIN/api/waitlist/export -o waitlist.csv
-```
-
-You can also browse entries in the Upstash console (keys `email:*` and `phone:*`).
-
 ## 4. What the waitlist does
 
 - It asks for a name, **a WhatsApp number or an email** (at least one), and a consent checkbox.
 - It saves **one entry per person**, by email or WhatsApp number. `0300 1234567` and `+92 300 1234567` count as the same number. Repeat sign-ups get the same "OK" reply, so nobody can find out who is already on the list.
 - A hidden field catches bots. Their submissions are answered "OK" and never stored.
-- `GET /api/waitlist/count` returns the real number of sign-ups. The page shows "N people have already joined" **only once there are 50 or more**. To change this, edit `PROOF_MIN` in `index.html`.
+- `GET /api/waitlist/count` returns the real number of sign-ups (rows in the sheet). The page shows "N people have already joined" **only once there are 50 or more**. To change this, edit `PROOF_MIN` in `index.html`.
 - It stores only what the form asks for, plus the time of consent and the visitor's country code.
 
 ## 5. Things to keep honest

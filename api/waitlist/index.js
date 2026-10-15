@@ -1,5 +1,5 @@
 /** POST /api/waitlist  {name, email?, whatsapp?, consent}  (email OR whatsapp required) */
-import { COUNT_KEY, configured, json, redis } from "../_lib/waitlist.js";
+import { COUNT_KEY, configured, json, redis, sheetsAdd, sheetsConfigured } from "../_lib/waitlist.js";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const PHONE_RE = /^\+?[\d\s-]{10,18}$/;
@@ -14,7 +14,7 @@ function normalizePhone(raw) {
 }
 
 export async function POST(request) {
-  if (!configured()) return json({ ok: false, error: "not_configured" }, 503);
+  if (!configured() && !sheetsConfigured()) return json({ ok: false, error: "not_configured" }, 503);
 
   let data;
   try {
@@ -41,17 +41,23 @@ export async function POST(request) {
 
   // One entry per person: dedupe on email if given, otherwise on the normalized phone number.
   const key = email ? `email:${email}` : `phone:${phone}`;
-  const entry = JSON.stringify({
+  const entry = {
     name, email, whatsapp: phone ? `+${phone}` : "",
     consentAt: new Date().toISOString(),
     country: request.headers.get("x-vercel-ip-country") || "",
     source: new URL(request.url).hostname,
-  });
-  try {
-    if ((await redis("SET", key, entry, "NX")) === "OK") await redis("INCR", COUNT_KEY);
-  } catch {
-    return json({ ok: false, error: "storage" }, 503);
-  }
+  };
+
+  // Save to every configured store; each one skips duplicates on its own.
+  // Succeed if at least one store saved it, so a Sheets hiccup never loses a sign-up kept in Redis.
+  const saves = [];
+  if (sheetsConfigured()) saves.push(sheetsAdd(entry));
+  if (configured()) saves.push((async () => {
+    if ((await redis("SET", key, JSON.stringify(entry), "NX")) === "OK") await redis("INCR", COUNT_KEY);
+  })());
+  const results = await Promise.allSettled(saves);
+  results.filter(r => r.status === "rejected").forEach(r => console.error("waitlist store failed:", r.reason?.message));
+  if (!results.some(r => r.status === "fulfilled")) return json({ ok: false, error: "storage" }, 503);
   // Same response for new and repeat sign-ups (doesn't reveal who is on the list).
   return json({ ok: true });
 }
