@@ -78,7 +78,9 @@ npx vercel dev
 
 ## 5. Prices by country
 
-The page guesses the visitor's country instantly from their phone's time zone and language, then confirms it with Vercel (`/api/geo`). It then shows every price in that currency:
+Every visitor sees prices in **their own currency**. The page guesses the country instantly from the phone's time zone and language, then confirms it with Vercel (`/api/geo`). That endpoint also returns the country's currency and today's exchange rate.
+
+**Hand-set prices** (edit `PRICES` and `CUR` near the top of the script in `index.html`):
 
 | Visitors from | Waitlist / month | Regular / month |
 |---|---|---|
@@ -91,11 +93,24 @@ The page guesses the visitor's country instantly from their phone's time zone an
 | UAE / Saudi Arabia | AED / SAR 3.99 | AED / SAR 18.99 |
 | Canada | CA$1.39 | CA$6.99 |
 | Australia | A$1.49 | A$7.99 |
-| Everywhere else | US$0.99 | US$4.99 |
 
-The burger and screen-time-app comparison changes with the currency too. To change a price or add a country, edit `PRICES` and `CUR` near the top of the script in `index.html`.
+**Every other country (about 240, in 150 currencies)** gets the US$0.99 / US$4.99 tier converted at today's rate and rounded to a natural local price. Examples from October 2026:
 
-**Set the same prices in Google Play.** In Play Console, set the subscription's base price to US$4.99 and check each country's local price. Then add a **waitlist offer** for US$0.99 (Rs 100 in Pakistan). Google Play converts any country you don't set by hand. It charges in local currency with taxes included, so the final amount can differ slightly from the page.
+| Country | Waitlist / regular |
+|---|---|
+| Japan | ¥160 / ¥790 |
+| Brazil | R$4.99 / R$25.99 |
+| Nigeria | ₦1,400 / ₦6,700 |
+| Turkey | ₺48.99 / ₺250 |
+| Indonesia | Rp 18.000 / Rp 90.000 |
+| Mexico | $18.99 / $92.99 |
+
+- Rates come from [ExchangeRate-API](https://www.exchangerate-api.com)'s free open access. It needs no key and updates daily, and the endpoint caches it for 12 hours. Its terms ask for a credit link, which is in the price fine print.
+- If rates can't be loaded, the page shows US$.
+- The country-to-currency list is in `api/_lib/currencies.js`, generated from Unicode CLDR.
+- To give a country a hand-set price, add its currency to `PRICES` and the country to `CUR`.
+
+**Set the same prices in Google Play.** In Play Console, set the subscription's base price to US$4.99 and check the local prices it suggests. Make them match the page for your main countries. Then add a **waitlist offer** for US$0.99 (Rs 100 in Pakistan). Google Play charges in local currency with taxes included, so the final amount can differ slightly from the page.
 
 ## 6. Things to keep honest
 

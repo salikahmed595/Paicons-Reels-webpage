@@ -467,7 +467,7 @@ dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(6px);-webkit-bac
       <div class="r"><span class="e" aria-hidden="true">🍔</span><div>A burger<small>Gone in 10 minutes</small></div><b data-p="b">US$5+</b></div>
       <div class="r"><span class="e" aria-hidden="true">📱</span><div>Popular screen-time apps<small>Per month</small></div><b data-p="a">US$19.99</b></div>
       <div class="r win"><span class="e" aria-hidden="true">🌱</span><div>PAICONS<small>A whole month of your time back</small></div><b data-p="w">US$0.99</b></div>
-      <p class="fine">Prices are indicative and vary by country and city. The screen-time app price is a popular app’s 2026 monthly plan, roughly converted. Subscriptions are handled by Google Play, which shows the final price in your currency, including local taxes.</p>
+      <p class="fine">Prices are indicative and vary by country and city. The screen-time app price is a popular app’s 2026 monthly plan, roughly converted. Subscriptions are handled by Google Play, which shows the final price in your currency, including local taxes. Some local prices are converted daily using <a href="https://www.exchangerate-api.com" rel="noopener">rates by Exchange Rate API</a>.</p>
     </div>
   </div>
 </section>
@@ -559,7 +559,7 @@ dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(6px);-webkit-bac
   'use strict';
   const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const buzz = ms => { try { navigator.vibrate && navigator.vibrate(ms); } catch (e) {} };
+  const buzz = ms => { try { if (navigator.vibrate && (!navigator.userActivation || navigator.userActivation.hasBeenActive)) navigator.vibrate(ms); } catch (e) {} };   // phones only allow it after a tap
   $('#yr').textContent = new Date().getFullYear();
 
   /* ---------- Local pricing: founding price in the visitor's own currency ----------
@@ -580,24 +580,37 @@ dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(6px);-webkit-bac
   const CUR = {PK: 'PKR', US: 'USD', GB: 'GBP', IN: 'INR', BD: 'BDT', AE: 'AED', SA: 'SAR', CA: 'CAD', AU: 'AUD'};
   'AT BE CY DE EE ES FI FR GR HR IE IT LT LU LV MT NL PT SI SK'.split(' ').forEach(c => { CUR[c] = 'EUR'; });
   const TZ = {'Asia/Karachi': 'PK', 'Asia/Kolkata': 'IN', 'Asia/Calcutta': 'IN', 'Asia/Dhaka': 'BD', 'Asia/Dubai': 'AE', 'Asia/Riyadh': 'SA', 'Europe/London': 'GB'};
+  // Every other currency: the US$ tier converted at today's rate, rounded to a natural local price.
+  const decimals = cur => { try { return new Intl.NumberFormat('en', {style: 'currency', currency: cur}).resolvedOptions().maximumFractionDigits; } catch (e) { return 2; } };
+  const sig2 = v => { const m = 10 ** Math.max(0, Math.floor(Math.log10(v)) - 1); return Math.ceil(v / m) * m; };   // 157 → 160, 1318 → 1,400
+  const nice = (v, zero) => zero || v >= 100 ? sig2(v) : v < 1 ? Math.ceil(v * 10) / 10 - .01 : Math.ceil(v) - .01; // 3.63 → 3.99, 0.31 → 0.39
+  const convert = (rate, cur) => {
+    const z = decimals(cur) === 0, U = PRICES.USD;
+    return {w: nice(U.w * rate, z), r: nice(U.r * rate, z), b: sig2(U.b * rate), a: nice(U.a * rate, z)};
+  };
   const onPrice = [];
   const price = {
-    cur: 'USD', p: PRICES.USD,
+    cur: 'USD', p: PRICES.USD, country: '', key: '',
     fmt(v){
       if (typeof v === 'string') return this.fmt(parseFloat(v.replace(/,/g, ''))) + (v.endsWith('+') ? '+' : '');
-      if (this.cur === 'PKR') return 'Rs\u00a0' + v.toLocaleString('en-US');
+      if (this.cur === 'PKR') return 'Rs ' + v.toLocaleString('en-US');
       if (this.cur === 'USD' && this.country !== 'US') return 'US$' + (v % 1 ? v.toFixed(2) : v.toLocaleString('en-US'));
-      const dec = v % 1 ? 2 : 0;
-      try { return new Intl.NumberFormat(navigator.language || 'en', {style: 'currency', currency: this.cur, currencyDisplay: this.cur === 'USD' ? 'narrowSymbol' : 'symbol', minimumFractionDigits: dec, maximumFractionDigits: dec}).format(v); }
-      catch (e) { return this.cur + '\u00a0' + v; }
+      const dec = Math.abs(v % 1) > 1e-9 ? 2 : 0, o = {style: 'currency', currency: this.cur, currencyDisplay: 'narrowSymbol', minimumFractionDigits: dec, maximumFractionDigits: dec};
+      try { return new Intl.NumberFormat(this.country ? 'en-' + this.country : 'en', o).format(v); }
+      catch (e) { try { return new Intl.NumberFormat('en', o).format(v); } catch (e2) { return this.cur + ' ' + v; } }
     },
-    set(country){
-      const cur = CUR[country] || 'USD';
-      if (cur === this.cur && this.done && (cur !== 'USD' || country === this.country)) return;
-      this.cur = cur; this.p = PRICES[cur]; this.done = true; this.country = country;
-      const p = this.p, day = p.w / 30;
+    // country: ISO code; cur + rate (units per US$1) come from /api/geo for countries without a hand-set price.
+    set(country, cur, rate){
+      let p;
+      if (CUR[country]) { cur = CUR[country]; p = PRICES[cur]; }           // hand-set price for this country
+      else if (cur && PRICES[cur]) p = PRICES[cur];                          // hand-set price for this currency
+      else if (cur && cur !== 'USD' && rate > 0) p = convert(rate, cur);     // converted at today's rate
+      else { cur = 'USD'; p = PRICES.USD; }
+      if (cur + country === this.key) return;
+      this.key = cur + country; this.cur = cur; this.p = p; this.country = country;
+      const day = p.w / 30, whole = decimals(cur) === 0 || p.w >= 10;
       const val = {w: this.fmt(p.w), r: this.fmt(p.r), b: this.fmt(p.b) + (typeof p.b === 'number' ? '+' : ''), a: this.fmt(p.a),
-        d: p.w >= 10 ? this.fmt(Math.round(day)) : this.fmt(Math.max(.01, Math.round(day * 100) / 100))};   // whole units where there are no small coins
+        d: this.fmt(whole ? (day >= 100 ? sig2(day) : Math.max(1, Math.round(day))) : Math.max(.01, Math.round(day * 100) / 100))};   // whole units where there are no small coins
       $$('[data-p]').forEach(el => { el.textContent = val[el.dataset.p]; });
       document.documentElement.dataset.cur = cur;
       onPrice.forEach(f => f());
@@ -608,8 +621,8 @@ dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(6px);-webkit-bac
   try { guess = TZ[Intl.DateTimeFormat().resolvedOptions().timeZone] || ''; } catch (e) {}
   if (!guess) { const m = (navigator.language || '').match(/-([A-Z]{2})$/i); if (m) guess = m[1].toUpperCase(); }
   price.set(guess);
-  // 2) Confirm with the visitor's real country (from Vercel).
-  fetch('/api/geo').then(r => r.ok ? r.json() : null).then(d => { if (d && d.country) price.set(d.country.toUpperCase()); }).catch(() => {});
+  // 2) Confirm with the visitor's real country, currency and today's rate (from Vercel).
+  fetch('/api/geo').then(r => r.ok ? r.json() : null).then(d => { if (d && d.country) price.set(d.country.toUpperCase(), d.currency, d.rate); }).catch(() => {});
   const setPh = () => { $('#contact').placeholder = price.cur === 'PKR' ? '03xx xxxxxxx or you@email.com' : 'WhatsApp with country code, or email'; };
   setPh(); onPrice.push(setPh);
 
